@@ -109,9 +109,20 @@ bool MinidumpFileWriter::Close() {
     }
 #else
   if (hFile != INVALID_HANDLE_VALUE){
-	
-  }
-  
+
+	LARGE_INTEGER li;
+	li.QuadPart = position_;
+	bool flag_SetFilePointer =  SetFilePointerEx(
+	  hFile,
+	  li,
+	  NULL,
+	  0
+	);
+
+	bool flag_SetEndOfFile = SetEndOfFile(
+	  hFile
+	);
+    CloseHandle(hFile);
 #endif
 #if __linux__
     result = (sys_close(file_) == 0);
