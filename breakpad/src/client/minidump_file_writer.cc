@@ -35,8 +35,13 @@
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
+#ifdef _linux_
 #include <unistd.h>
-
+#endif
+#ifdef _WIN32
+#include <windows.h>
+#include <io.h>
+#endif
 #include "client/minidump_file_writer-inl.h"
 #include "common/linux/linux_libc_support.h"
 #include "common/string_conversion.h"
@@ -61,29 +66,53 @@ MinidumpFileWriter::~MinidumpFileWriter() {
 }
 
 bool MinidumpFileWriter::Open(const char *path) {
+#ifndef _WIN32
   assert(file_ == -1);
+#endif
 #if __linux__
   file_ = sys_open(path, O_WRONLY | O_CREAT | O_EXCL, 0600);
+  return file_ != -1;
+#elif _WIN32
+  hFile = CreateFile(path,               // file to open
+                     GENERIC_READ,          // open for reading
+                     FILE_SHARE_READ,       // share for reading
+                     NULL,                  // default security
+                     OPEN_EXISTING,         // existing file only
+                     FILE_ATTRIBUTE_NORMAL, // normal file
+                     NULL);     
+  if (hFile == INVALID_HANDLE_VALUE){ 
+      return false; 
+  }
+  else{
+	  return true;
+  }
 #else
   file_ = open(path, O_WRONLY | O_CREAT | O_EXCL, 0600);
-#endif
-
   return file_ != -1;
+#endif  
 }
 
 void MinidumpFileWriter::SetFile(const int file) {
+#ifndef _WIN32
   assert(file_ == -1);
   file_ = file;
   close_file_when_destroyed_ = false;
+#endif
 }
 
 bool MinidumpFileWriter::Close() {
   bool result = true;
-
+#ifndef _WIN32
   if (file_ != -1) {
     if (-1 == ftruncate(file_, position_)) {
        return false;
     }
+#else
+  if (hFile != INVALID_HANDLE_VALUE){
+	
+  }
+  
+#endif
 #if __linux__
     result = (sys_close(file_) == 0);
 #else

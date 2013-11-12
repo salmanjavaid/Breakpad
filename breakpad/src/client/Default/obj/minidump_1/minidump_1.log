@@ -1,0 +1,44 @@
+﻿Build started 11/12/2013 5:10:49 PM.
+     1>Project "E:\Opensource\Mozilla\Bug\3\breakpad\src\client\minidump_1.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Touching "Default\obj\minidump_1\minidump_1.unsuccessfulbuild".
+       ClCompile:
+         E:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I.. /Zi /nologo /W1 /WX- /O2 /Oy- /Gm- /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Default\obj\minidump_1\\" /Fd"Default\obj\minidump_1\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt minidump_file_writer_unittest.cc minidump_file_writer.cc
+         minidump_file_writer_unittest.cc
+     1>E:\Opensource\Mozilla\Bug\3\breakpad\src\client/minidump_file_writer.h(274): error C2229: class 'google_breakpad::TypedMDRVA<MDType>' has an illegal zero-sized array
+                 with
+                 [
+                     MDType=ObjectAndArrayStructure
+                 ]
+                 minidump_file_writer_unittest.cc(99) : see reference to class template instantiation 'google_breakpad::TypedMDRVA<MDType>' being compiled
+                 with
+                 [
+                     MDType=ObjectAndArrayStructure
+                 ]
+         minidump_file_writer.cc
+     1>minidump_file_writer.cc(69): error C3861: 'open': identifier not found
+     1>minidump_file_writer.cc(85): error C3861: 'ftruncate': identifier not found
+     1>minidump_file_writer.cc(91): error C3861: 'close': identifier not found
+     1>minidump_file_writer.cc(228): error C3861: 'getpagesize': identifier not found
+     1>minidump_file_writer.cc(235): error C3861: 'ftruncate': identifier not found
+     1>minidump_file_writer.cc(247): error C2039: 'Copy' : is not a member of 'google_breakpad::MinidumpFileWriter'
+                 E:\Opensource\Mozilla\Bug\3\breakpad\src\client/minidump_file_writer.h(72) : see declaration of 'google_breakpad::MinidumpFileWriter'
+     1>minidump_file_writer.cc(247): error C2061: syntax error : identifier 'ssize_t'
+     1>minidump_file_writer.cc(249): error C2065: 'size' : undeclared identifier
+     1>minidump_file_writer.cc(250): error C2065: 'file_' : undeclared identifier
+     1>minidump_file_writer.cc(253): error C2065: 'size' : undeclared identifier
+     1>minidump_file_writer.cc(253): error C2065: 'size_' : undeclared identifier
+     1>minidump_file_writer.cc(261): error C2065: 'file_' : undeclared identifier
+     1>minidump_file_writer.cc(261): error C3861: 'lseek': identifier not found
+     1>minidump_file_writer.cc(262): error C2065: 'file_' : undeclared identifier
+     1>minidump_file_writer.cc(262): error C2065: 'size' : undeclared identifier
+     1>minidump_file_writer.cc(262): error C2065: 'size' : undeclared identifier
+     1>minidump_file_writer.cc(262): error C3861: 'write': identifier not found
+     1>minidump_file_writer.cc(282): error C2039: 'Copy' : is not a member of 'google_breakpad::MinidumpFileWriter'
+                 E:\Opensource\Mozilla\Bug\3\breakpad\src\client/minidump_file_writer.h(72) : see declaration of 'google_breakpad::MinidumpFileWriter'
+         Generating Code...
+     1>Done Building Project "E:\Opensource\Mozilla\Bug\3\breakpad\src\client\minidump_1.vcxproj" (build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:01.39
