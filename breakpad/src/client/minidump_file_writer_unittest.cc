@@ -38,8 +38,9 @@
  */
 
 #include <fcntl.h>
+#ifdef __linux__
 #include <unistd.h>
-
+#endif
 #include "minidump_file_writer-inl.h"
 
 using google_breakpad::MinidumpFileWriter;
@@ -144,14 +145,16 @@ static bool CompareFile(const char *path) {
     0x0000000a, 0x000a1c09, 0x0000000b, 0x00000000,
 #endif
   };
+
+#ifdef __linux__
   size_t expected_byte_count = sizeof(expected);
   int fd = open(path, O_RDONLY, 0600);
   void *buffer = malloc(expected_byte_count);
   ASSERT_NE(fd, -1);
   ASSERT_TRUE(buffer);
+
   ASSERT_EQ(read(fd, buffer, expected_byte_count), 
             static_cast<ssize_t>(expected_byte_count));
-
   char *b1, *b2;
   b1 = reinterpret_cast<char*>(buffer);
   b2 = reinterpret_cast<char*>(expected);
@@ -164,6 +167,31 @@ static bool CompareFile(const char *path) {
 
   ASSERT_EQ(memcmp(buffer, expected, expected_byte_count), 0);
   return true;
+#elif _Win32
+	SIZE_T ExpectedByteCount = sizeof(expected);
+	HANDLE hFile;
+	DWORD dwBytesRead = 0;
+	char ReadBuffer[ExpectedByteCount] = {0};
+
+	hFile = CreateFile(path,               // file to open
+                       GENERIC_READ,          // open for reading
+                       0x00000000,            // Prevent other processes from opening ANY file
+                       NULL,                  // default security
+                       OPEN_EXISTING,         // existing file only
+                       FILE_ATTRIBUTE_NORMAL, // normal file
+                       NULL);                 // no attr. template
+
+	if (hFile == INVALID_HANDLE_VALUE) 
+	{ 
+       return false; 
+	}
+ 
+	if( FALSE == ReadFile(hFile, ReadBuffer, BUFFERSIZE-1, &dwBytesRead, NULL) )
+    {
+        return false;
+    }
+#endif
+
 }
 
 static bool RunTests() {

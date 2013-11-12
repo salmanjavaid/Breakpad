@@ -35,6 +35,10 @@
 #define CLIENT_MINIDUMP_FILE_WRITER_H__
 
 #include <string>
+#ifdef _Win32
+#include<windows.h>
+#endif
+
 
 #include "google_breakpad/common/minidump_format.h"
 
@@ -111,8 +115,11 @@ public:
 
   // Copies |size| bytes from |src| to |position|
   // Return true on success, or false on failure
+#ifdef _Win32
+  bool Copy(MDRVA position, const void *src, SSIZE_t size);
+#elif __linux__ 
   bool Copy(MDRVA position, const void *src, ssize_t size);
-
+#endif
   // Return the current position for writing to the minidump
   inline MDRVA position() const { return position_; }
 
@@ -125,7 +132,13 @@ public:
   MDRVA Allocate(size_t size);
 
   // The file descriptor for the output file.
+#ifndef _WIN32
   int file_;
+#endif
+  // The handle for filing in Windows
+#ifdef _WIN32
+  HANDLE hFile;
+#endif
 
   // Whether |file_| should be closed when the instance is destroyed.
   bool close_file_when_destroyed_;
@@ -135,6 +148,7 @@ public:
 
   // Current allocated size
   size_t size_;
+
 
   // Copy |length| characters from |str| to |mdstring|.  These are distinct
   // because the underlying MDString is a UTF-16 based string.  The wchar_t
