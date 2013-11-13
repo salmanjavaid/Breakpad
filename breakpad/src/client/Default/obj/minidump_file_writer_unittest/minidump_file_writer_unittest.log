@@ -1,0 +1,16 @@
+﻿Build started 11/13/2013 10:32:05 PM.
+     1>Project "E:\Opensource\Mozilla\Bug\3\breakpad\src\client\minidump_file_writer_unittest.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Default\obj\minidump_file_writer_unittest\minidump_file_writer_unittest.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         E:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I.. /Zi /nologo /W1 /WX- /O2 /Oy- /Gm- /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Default\obj\minidump_file_writer_unittest\\" /Fd"Default\obj\minidump_file_writer_unittest\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt minidump_file_writer_unittest.cc minidump_file_writer.cc
+         minidump_file_writer_unittest.cc
+     1>minidump_file_writer_unittest.cc(41): fatal error C1083: Cannot open include file: 'unistd.h': No such file or directory
+         minidump_file_writer.cc
+     1>minidump_file_writer.cc(38): fatal error C1083: Cannot open include file: 'unistd.h': No such file or directory
+         Generating Code...
+     1>Done Building Project "E:\Opensource\Mozilla\Bug\3\breakpad\src\client\minidump_file_writer_unittest.vcxproj" (build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:03.97
