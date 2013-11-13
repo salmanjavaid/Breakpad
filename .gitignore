@@ -1,0 +1,7 @@
+breakpad/src/common/
+breakpad/src/google_breakpad/
+breakpad/src/processor/
+breakpad/src/testing/
+breakpad/src/thirdparty/
+breakpad/src/tools/
+breakpad/src/client/minidump_file_writer.opensdf
