@@ -109,8 +109,6 @@ bool MinidumpFileWriter::Close() {
     }
 #else
   if (hFile != INVALID_HANDLE_VALUE){
-<<<<<<< HEAD
-
 	LARGE_INTEGER li;
 	li.QuadPart = position_;
 	bool flag_SetFilePointer =  SetFilePointerEx(
@@ -124,11 +122,8 @@ bool MinidumpFileWriter::Close() {
 	  hFile
 	);
     CloseHandle(hFile);
-=======
-	
   }
   
->>>>>>> d37f7a5b2a1f9da6231f0c6e9723191c06ff4359
 #endif
 #if __linux__
     result = (sys_close(file_) == 0);
@@ -140,6 +135,8 @@ bool MinidumpFileWriter::Close() {
 
   return result;
 }
+
+
 
 bool MinidumpFileWriter::CopyStringToMDString(const wchar_t *str,
                                               unsigned int length,
