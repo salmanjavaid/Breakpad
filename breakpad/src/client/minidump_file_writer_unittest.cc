@@ -38,7 +38,10 @@
  */
 
 #include <fcntl.h>
+
+#ifndef _WIN32
 #include <unistd.h>
+#endif
 
 #include "minidump_file_writer-inl.h"
 

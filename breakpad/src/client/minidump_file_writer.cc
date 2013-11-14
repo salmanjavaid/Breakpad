@@ -35,7 +35,10 @@
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
+
+#ifndef _WIN32
 #include <unistd.h>
+#endif
 
 #include "client/minidump_file_writer-inl.h"
 #include "common/linux/linux_libc_support.h"
