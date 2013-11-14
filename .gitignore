@@ -5,3 +5,5 @@ breakpad/src/testing/
 breakpad/src/thirdparty/
 breakpad/src/tools/
 breakpad/src/client/minidump_file_writer.opensdf
+*.sdf
+*.suo
