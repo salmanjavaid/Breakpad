@@ -1,43 +1,24 @@
-﻿Build started 11/14/2013 7:03:30 PM.
+﻿Build started 11/14/2013 7:43:55 PM.
      1>Project "E:\Opensource\Mozilla\Bug\3\breakpad\src\client\minidump_file_writer_unittest.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Touching "Default\obj\minidump_file_writer_unittest\minidump_file_writer_unittest.unsuccessfulbuild".
        ClCompile:
          E:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I.. /Zi /nologo /W1 /WX- /O2 /Oy- /Gm- /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Default\obj\minidump_file_writer_unittest\\" /Fd"Default\obj\minidump_file_writer_unittest\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt minidump_file_writer_unittest.cc minidump_file_writer.cc
          minidump_file_writer_unittest.cc
-     1>E:\Opensource\Mozilla\Bug\3\breakpad\src\client/minidump_file_writer.h(114): error C2061: syntax error : identifier 'ssize_t'
-     1>E:\Opensource\Mozilla\Bug\3\breakpad\src\client/minidump_file_writer.h(267): error C2229: class 'google_breakpad::TypedMDRVA<MDType>' has an illegal zero-sized array
+     1>E:\Opensource\Mozilla\Bug\3\breakpad\src\client/minidump_file_writer.h(269): error C2229: class 'google_breakpad::TypedMDRVA<MDType>' has an illegal zero-sized array
                  with
                  [
                      MDType=ObjectAndArrayStructure
                  ]
-                 minidump_file_writer_unittest.cc(101) : see reference to class template instantiation 'google_breakpad::TypedMDRVA<MDType>' being compiled
+                 minidump_file_writer_unittest.cc(103) : see reference to class template instantiation 'google_breakpad::TypedMDRVA<MDType>' being compiled
                  with
                  [
                      MDType=ObjectAndArrayStructure
                  ]
-     1>minidump_file_writer_unittest.cc(151): error C3861: 'open': identifier not found
-     1>minidump_file_writer_unittest.cc(156): error C2061: syntax error : identifier 'ssize_t'
-     1>minidump_file_writer_unittest.cc(156): error C2143: syntax error : missing ';' before '{'
-     1>minidump_file_writer_unittest.cc(156): error C3861: 'read': identifier not found
          minidump_file_writer.cc
-     1>E:\Opensource\Mozilla\Bug\3\breakpad\src\client/minidump_file_writer.h(114): error C2061: syntax error : identifier 'ssize_t'
-     1>minidump_file_writer.cc(71): error C3861: 'open': identifier not found
-     1>minidump_file_writer.cc(87): error C3861: 'ftruncate': identifier not found
-     1>minidump_file_writer.cc(93): error C3861: 'close': identifier not found
-     1>minidump_file_writer.cc(230): error C3861: 'getpagesize': identifier not found
-     1>minidump_file_writer.cc(237): error C3861: 'ftruncate': identifier not found
-     1>minidump_file_writer.cc(249): error C2061: syntax error : identifier 'ssize_t'
-     1>minidump_file_writer.cc(251): error C2065: 'size' : undeclared identifier
-     1>minidump_file_writer.cc(255): error C2065: 'size' : undeclared identifier
-     1>minidump_file_writer.cc(263): error C3861: 'lseek': identifier not found
-     1>minidump_file_writer.cc(264): error C2065: 'size' : undeclared identifier
-     1>minidump_file_writer.cc(264): error C2065: 'size' : undeclared identifier
-     1>minidump_file_writer.cc(264): error C3861: 'write': identifier not found
-     1>minidump_file_writer.cc(284): error C2660: 'google_breakpad::MinidumpFileWriter::Copy' : function does not take 3 arguments
          Generating Code...
      1>Done Building Project "E:\Opensource\Mozilla\Bug\3\breakpad\src\client\minidump_file_writer_unittest.vcxproj" (build target(s)) -- FAILED.
 
 Build FAILED.
 
-Time Elapsed 00:00:00.99
+Time Elapsed 00:00:01.81

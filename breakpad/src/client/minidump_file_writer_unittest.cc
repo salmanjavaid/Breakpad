@@ -41,6 +41,8 @@
 
 #ifndef _WIN32
 #include <unistd.h>
+#else
+#include <windows.h>
 #endif
 
 #include "minidump_file_writer-inl.h"
@@ -147,6 +149,8 @@ static bool CompareFile(const char *path) {
     0x0000000a, 0x000a1c09, 0x0000000b, 0x00000000,
 #endif
   };
+
+#ifndef _WIN32
   size_t expected_byte_count = sizeof(expected);
   int fd = open(path, O_RDONLY, 0600);
   void *buffer = malloc(expected_byte_count);
@@ -167,6 +171,9 @@ static bool CompareFile(const char *path) {
 
   ASSERT_EQ(memcmp(buffer, expected, expected_byte_count), 0);
   return true;
+#else
+
+#endif
 }
 
 static bool RunTests() {

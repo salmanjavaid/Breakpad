@@ -38,7 +38,10 @@
 
 #ifndef _WIN32
 #include <unistd.h>
+#else
+#include <windows.h>
 #endif
+
 
 #include "client/minidump_file_writer-inl.h"
 #include "common/linux/linux_libc_support.h"
@@ -67,6 +70,7 @@ bool MinidumpFileWriter::Open(const char *path) {
   assert(file_ == -1);
 #if __linux__
   file_ = sys_open(path, O_WRONLY | O_CREAT | O_EXCL, 0600);
+#elif _WIN32
 #else
   file_ = open(path, O_WRONLY | O_CREAT | O_EXCL, 0600);
 #endif
@@ -83,10 +87,12 @@ void MinidumpFileWriter::SetFile(const int file) {
 bool MinidumpFileWriter::Close() {
   bool result = true;
 
+#ifndef _WIN32
   if (file_ != -1) {
     if (-1 == ftruncate(file_, position_)) {
        return false;
     }
+
 #if __linux__
     result = (sys_close(file_) == 0);
 #else
@@ -94,8 +100,10 @@ bool MinidumpFileWriter::Close() {
 #endif
     file_ = -1;
   }
-
+#else
+#endif
   return result;
+
 }
 
 bool MinidumpFileWriter::CopyStringToMDString(const wchar_t *str,
@@ -221,10 +229,11 @@ bool MinidumpFileWriter::WriteMemory(const void *src, size_t size,
 }
 
 MDRVA MinidumpFileWriter::Allocate(size_t size) {
+
   assert(size);
   assert(file_ != -1);
   size_t aligned_size = (size + 7) & ~7;  // 64-bit alignment
-
+#ifndef _WIN32
   if (position_ + aligned_size > size_) {
     size_t growth = aligned_size;
     size_t minimal_growth = getpagesize();
@@ -239,13 +248,15 @@ MDRVA MinidumpFileWriter::Allocate(size_t size) {
 
     size_ = new_size;
   }
-
+#else
+#endif
   MDRVA current_position = position_;
   position_ += static_cast<MDRVA>(aligned_size);
 
   return current_position;
 }
 
+#ifndef _WIN32
 bool MinidumpFileWriter::Copy(MDRVA position, const void *src, ssize_t size) {
   assert(src);
   assert(size);
@@ -269,6 +280,8 @@ bool MinidumpFileWriter::Copy(MDRVA position, const void *src, ssize_t size) {
 
   return false;
 }
+#else
+#endif
 
 bool UntypedMDRVA::Allocate(size_t size) {
   assert(size_ == 0);
@@ -278,10 +291,15 @@ bool UntypedMDRVA::Allocate(size_t size) {
 }
 
 bool UntypedMDRVA::Copy(MDRVA pos, const void *src, size_t size) {
+#ifndef _WIN32
   assert(src);
   assert(size);
   assert(pos + size <= position_ + size_);
   return writer_->Copy(pos, src, size);
+#else
+  return true; /* Implement in Windows*/
+#endif
+
 }
 
 }  // namespace google_breakpad
