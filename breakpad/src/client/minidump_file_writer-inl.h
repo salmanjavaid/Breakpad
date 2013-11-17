@@ -71,9 +71,13 @@ inline bool TypedMDRVA<MDType>::AllocateObjectAndArray(size_t count,
 template<typename MDType>
 inline bool TypedMDRVA<MDType>::CopyIndex(unsigned int index, MDType *item) {
   assert(allocation_state_ == ARRAY);
+#ifndef _WIN32
   return writer_->Copy(
       static_cast<MDRVA>(position_ + index * minidump_size<MDType>::size()), 
       item, minidump_size<MDType>::size());
+#else
+  return true; /* Implement Windows function */
+#endif
 }
 
 template<typename MDType>

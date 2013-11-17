@@ -119,7 +119,7 @@ bool MinidumpFileWriter::CopyStringToMDString(const wchar_t *str,
 
     // Copy the string character by character
     while (length && result) {
-      UTF32ToUTF16Char(*str, out);
+		google_breakpad::UTF32ToUTF16Char(*str, out);
       if (!out[0])
         return false;
 
@@ -148,7 +148,7 @@ bool MinidumpFileWriter::CopyStringToMDString(const char *str,
 
   // Copy the string character by character
   while (length && result) {
-    int conversion_count = UTF8ToUTF16Char(str, length, out);
+    int conversion_count = google_breakpad::UTF8ToUTF16Char(str, length, out);
     if (!conversion_count)
       return false;
 

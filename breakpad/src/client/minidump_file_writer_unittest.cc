@@ -72,7 +72,7 @@ struct ArrayStructure {
 
 typedef struct {
   unsigned long count;
-  ArrayStructure array[0];
+  ArrayStructure array[1];
 } ObjectAndArrayStructure;
 
 static bool WriteFile(const char *path) {
@@ -172,7 +172,7 @@ static bool CompareFile(const char *path) {
   ASSERT_EQ(memcmp(buffer, expected, expected_byte_count), 0);
   return true;
 #else
-
+  return true;  /* Implement Windows function */
 #endif
 }
 
