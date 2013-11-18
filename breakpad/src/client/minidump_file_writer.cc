@@ -40,6 +40,7 @@
 #include <unistd.h>
 #else
 #include <windows.h>
+#include <io.h>
 #endif
 
 
@@ -81,9 +82,9 @@ bool MinidumpFileWriter::Open(const char *path) {
 	  NULL // extended attributes for file
 	  );
 
-  if (hFile_ == INVALID_HANDLE_VALUE){  // if the CreateFile failed
+  if (hFile_ == INVALID_HANDLE_VALUE) {  // if the CreateFile failed
 	  return false;
-  }else{ 
+  } else { 
 	  return true; 
   }
 
@@ -117,10 +118,48 @@ bool MinidumpFileWriter::Close() {
     file_ = -1;
   }
 #else
+  if (hFile_ != INVALID_HANDLE_VALUE) {
+		LARGE_INTEGER li; //LARGE_INETEGR to tell how many bytes
+		li.QuadPart = position_; // SetFilePointerEx expected a large integer
+		bool flag_SetFilePointer =  SetFilePointerEx(
+		  hFile_, // handle to opened file
+		  li, // the number of bytes to move
+		  NULL, // if you want to receive a new file pointer
+		  0 // starting point for new file pointer
+		);
+
+		if (flag_SetFilePointer == true) { // if the previous operation completed successfully
+			bool flag_SetEndOfFile = SetEndOfFile( // truncate file
+			  hFile_ // pass the handle
+			);
+	
+			if (flag_SetEndOfFile == true) { // if previous function completed successfully
+				return CloseHandle(hFile_); // close the file
+			} else {
+				return false; // else return false if failed
+			}
+
+		} else {
+			return false; // else return false if failed
+		}
+  }
+
 #endif
   return result;
 
 }
+
+#ifdef _WIN32
+long MinidumpFileWriter::getpagesize_WIN (void) {
+    static long g_pagesize = 0;
+    if (! g_pagesize) {
+        SYSTEM_INFO system_info;
+        GetSystemInfo (&system_info);
+        g_pagesize = system_info.dwPageSize;
+    }
+    return g_pagesize;
+}
+#endif
 
 bool MinidumpFileWriter::CopyStringToMDString(const wchar_t *str,
                                               unsigned int length,
@@ -245,7 +284,6 @@ bool MinidumpFileWriter::WriteMemory(const void *src, size_t size,
 }
 
 MDRVA MinidumpFileWriter::Allocate(size_t size) {
-
   assert(size);
   assert(file_ != -1);
   size_t aligned_size = (size + 7) & ~7;  // 64-bit alignment
@@ -265,6 +303,39 @@ MDRVA MinidumpFileWriter::Allocate(size_t size) {
     size_ = new_size;
   }
 #else
+    if (position_ + aligned_size > size_) {
+		size_t growth = aligned_size;
+		size_t minimal_growth = getpagesize_WIN();
+
+		// Ensure that the file grows by at least the size of a memory page
+		if (growth < minimal_growth)
+			growth = minimal_growth;
+
+		size_t new_size = size_ + growth;
+
+		LARGE_INTEGER li; //LARGE_INETEGR to tell how many bytes
+		li.QuadPart = new_size; // SetFilePointerEx expected a large integer
+		bool flag_SetFilePointer =  SetFilePointerEx(
+			hFile_, // handle to opened file
+			li, // the number of bytes to move
+			NULL, // if you want to receive a new file pointer
+			0 // starting point for new file pointer
+		);
+
+		if (flag_SetFilePointer == true) { // if the previous operation completed successfully
+			bool flag_SetEndOfFile = SetEndOfFile( // truncate file
+				hFile_ // pass the handle
+			);
+	
+			if (flag_SetEndOfFile == false) { // if previous function failed
+				return  kInvalidMDRVA; // function failed
+			}
+		size_ = new_size;
+		} else { 
+			return  kInvalidMDRVA; // function failed
+		}
+	}
+
 #endif
   MDRVA current_position = position_;
   position_ += static_cast<MDRVA>(aligned_size);
@@ -297,7 +368,50 @@ bool MinidumpFileWriter::Copy(MDRVA position, const void *src, ssize_t size) {
   return false;
 }
 #else
+bool MinidumpFileWriter::Copy(MDRVA position, const void *src, SSIZE_T size) {
+  assert(src);
+  assert(size);
+  assert(file_ != -1);
+
+  // Ensure that the data will fit in the allocated space
+  if (static_cast<size_t>(size + position) > size_)
+    return false;
+
+  // Seek and write the data
+  LPDWORD NumberOfBytesWritten; 
+  if (myFileSeek(hFile_, position, FILE_BEGIN) == static_cast<off_t>(position)) {
+	  if (WriteFile(hFile_, src, size, NumberOfBytesWritten, NULL)) {
+			return true;
+	  }
+  }
+  return false;
+}
 #endif
+
+
+#ifdef _WIN32
+__int64 MinidumpFileWriter::myFileSeek(HANDLE hf, __int64 distance, DWORD MoveMethod)
+{
+   LARGE_INTEGER li;
+
+   li.QuadPart = distance;
+
+   li.LowPart = SetFilePointer (hf, 
+                                li.LowPart, 
+                                &li.HighPart, 
+                                MoveMethod);
+
+   if (li.LowPart == INVALID_SET_FILE_POINTER && GetLastError() 
+       != NO_ERROR)
+   {
+      li.QuadPart = -1;
+   }
+
+   return li.QuadPart;
+}
+
+#endif
+
 
 bool UntypedMDRVA::Allocate(size_t size) {
   assert(size_ == 0);
@@ -314,7 +428,7 @@ bool UntypedMDRVA::Copy(MDRVA pos, const void *src, size_t size) {
 #ifndef _WIN32
   return writer_->Copy(pos, src, size);
 #else
-  return true; /* Implement in Windows*/
+  return writer_->Copy(pos, src, size); /* Implement in Windows*/
 #endif
 
 }

@@ -114,9 +114,16 @@ public:
 #ifndef _WIN32
   bool Copy(MDRVA position, const void *src, ssize_t size);
 #else
+  bool Copy(MDRVA position, const void *src, SSIZE_T size);
+  __int64 myFileSeek(HANDLE hf, __int64 distance, DWORD MoveMethod);
 #endif
   // Return the current position for writing to the minidump
   inline MDRVA position() const { return position_; }
+
+#ifdef _WIN32  
+  // pagesize for Windows, getpagesize() on linux machines
+  long getpagesize_WIN();
+#endif
 
  private:
   friend class UntypedMDRVA;
