@@ -58,7 +58,7 @@ MinidumpFileWriter::MinidumpFileWriter()
     : file_(-1),
       close_file_when_destroyed_(true),
       position_(0),
-      size_(0) {
+      size_(0), hFile_(NULL) {
 }
 
 MinidumpFileWriter::~MinidumpFileWriter() {
@@ -71,6 +71,22 @@ bool MinidumpFileWriter::Open(const char *path) {
 #if __linux__
   file_ = sys_open(path, O_WRONLY | O_CREAT | O_EXCL, 0600);
 #elif _WIN32
+  hFile_ = CreateFile(
+	  path,  // the location of file
+	  GENERIC_WRITE,  // allow to write to file
+	  0,  // make sure no other process can access this file
+	  NULL, // this is a security attribute
+	  CREATE_ALWAYS, // always create a new file, overwrite if already exist
+	  FILE_ATTRIBUTE_NORMAL, // a normal file
+	  NULL // extended attributes for file
+	  );
+
+  if (hFile_ == INVALID_HANDLE_VALUE){  // if the CreateFile failed
+	  return false;
+  }else{ 
+	  return true; 
+  }
+
 #else
   file_ = open(path, O_WRONLY | O_CREAT | O_EXCL, 0600);
 #endif
@@ -291,10 +307,11 @@ bool UntypedMDRVA::Allocate(size_t size) {
 }
 
 bool UntypedMDRVA::Copy(MDRVA pos, const void *src, size_t size) {
-#ifndef _WIN32
+
   assert(src);
   assert(size);
   assert(pos + size <= position_ + size_);
+#ifndef _WIN32
   return writer_->Copy(pos, src, size);
 #else
   return true; /* Implement in Windows*/

@@ -128,6 +128,10 @@ public:
 
   // The file descriptor for the output file.
   int file_;
+#ifdef _WIN32 //if system is Windows
+  HANDLE hFile_;
+#endif
+  
 
   // Whether |file_| should be closed when the instance is destroyed.
   bool close_file_when_destroyed_;
