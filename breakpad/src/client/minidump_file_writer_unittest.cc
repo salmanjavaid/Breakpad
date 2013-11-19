@@ -44,7 +44,7 @@
 #else
 #include <windows.h>
 #endif
-
+#include <iostream>
 #include "minidump_file_writer-inl.h"
 
 using google_breakpad::MinidumpFileWriter;
@@ -75,8 +75,13 @@ typedef struct {
   ArrayStructure array[1];
 } ObjectAndArrayStructure;
 
+#ifdef _WIN32
+static bool WriteFile(LPCTSTR path) {
+#else
 static bool WriteFile(const char *path) {
+#endif
   MinidumpFileWriter writer;
+
   if (writer.Open(path)) {
     // Test a single structure
     google_breakpad::TypedMDRVA<StringStructure> strings(&writer);
@@ -172,12 +177,38 @@ static bool CompareFile(const char *path) {
   ASSERT_EQ(memcmp(buffer, expected, expected_byte_count), 0);
   return true;
 #else
+  size_t expected_byte_count = sizeof(expected);
+  HANDLE hFile; 
+  DWORD  dwBytesRead = 0;
+  char *ReadBuffer = new char[expected_byte_count];
+  HANDLE _oFile = CreateFile(
+	  path,  // the location of file
+	  GENERIC_READ,  // allow to write to file
+	  0,  // make sure no other process can access this file
+	  NULL, // this is a security attribute
+	  OPEN_ALWAYS, // always create a new file, overwrite if already exist
+	  FILE_ATTRIBUTE_NORMAL, // a normal file
+	  NULL // extended attributes for file
+	  );
+
+  if (_oFile != INVALID_HANDLE_VALUE) {
+	 if(FALSE != ReadFile(_oFile, ReadBuffer, expected_byte_count-1, &dwBytesRead, NULL)) {
+        std::cout<<ReadBuffer<<std::endl;
+     }
+  }
+
   return true;  /* Implement Windows function */
 #endif
 }
 
 static bool RunTests() {
-  const char *path = "/tmp/minidump_file_writer_unittest.dmp";
+#ifdef _WIN32
+  LPCTSTR path = "E:\\minidump_file_writer_unittest.dmp";
+#else
+  const char *path = "E:\\minidump_file_writer_unittest.dmp";
+#endif 
+  int a = 1;
+  a = 5;
   ASSERT_TRUE(WriteFile(path));
   ASSERT_TRUE(CompareFile(path));
   unlink(path);

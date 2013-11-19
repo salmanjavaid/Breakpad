@@ -67,15 +67,20 @@ MinidumpFileWriter::~MinidumpFileWriter() {
     Close();
 }
 
+#ifdef _WIN32
+bool MinidumpFileWriter::Open(LPCTSTR path) {
+#else
 bool MinidumpFileWriter::Open(const char *path) {
-  assert(file_ == -1);
+#endif
+
 #if __linux__
+  assert(file_ == -1);
   file_ = sys_open(path, O_WRONLY | O_CREAT | O_EXCL, 0600);
 #elif _WIN32
   hFile_ = CreateFile(
 	  path,  // the location of file
 	  GENERIC_WRITE,  // allow to write to file
-	  0,  // make sure no other process can access this file
+	  FILE_SHARE_WRITE,  // make sure no other process can access this file
 	  NULL, // this is a security attribute
 	  CREATE_ALWAYS, // always create a new file, overwrite if already exist
 	  FILE_ATTRIBUTE_NORMAL, // a normal file
@@ -89,6 +94,7 @@ bool MinidumpFileWriter::Open(const char *path) {
   }
 
 #else
+  assert(file_ == -1);
   file_ = open(path, O_WRONLY | O_CREAT | O_EXCL, 0600);
 #endif
 
@@ -285,7 +291,9 @@ bool MinidumpFileWriter::WriteMemory(const void *src, size_t size,
 
 MDRVA MinidumpFileWriter::Allocate(size_t size) {
   assert(size);
+#ifndef _WIN32
   assert(file_ != -1);
+#endif
   size_t aligned_size = (size + 7) & ~7;  // 64-bit alignment
 #ifndef _WIN32
   if (position_ + aligned_size > size_) {
@@ -368,23 +376,34 @@ bool MinidumpFileWriter::Copy(MDRVA position, const void *src, ssize_t size) {
   return false;
 }
 #else
+#ifdef WIN_32
+bool MinidumpFileWriter::Copy(MDRVA position, LPCVOID src, SSIZE_T size) {
+#else
 bool MinidumpFileWriter::Copy(MDRVA position, const void *src, SSIZE_T size) {
+#endif
   assert(src);
   assert(size);
+#ifndef _WIN32
   assert(file_ != -1);
-
+#endif
   // Ensure that the data will fit in the allocated space
   if (static_cast<size_t>(size + position) > size_)
     return false;
 
   // Seek and write the data
-  LPDWORD NumberOfBytesWritten; 
-  if (myFileSeek(hFile_, position, FILE_BEGIN) == static_cast<off_t>(position)) {
-	  if (WriteFile(hFile_, src, size, NumberOfBytesWritten, NULL)) {
-			return true;
+  DWORD NumberOfBytesWritten = NULL; 
+  try{
+	  if (myFileSeek(hFile_, position, FILE_BEGIN) == static_cast<off_t>(position)) {
+		  if (WriteFile(hFile_, src, size, &NumberOfBytesWritten, NULL)) {
+				return true;
+		  }
 	  }
+	  return false;
   }
-  return false;
+  catch(...){
+	
+  }
+
 }
 #endif
 

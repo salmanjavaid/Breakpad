@@ -71,38 +71,29 @@ inline bool TypedMDRVA<MDType>::AllocateObjectAndArray(size_t count,
 template<typename MDType>
 inline bool TypedMDRVA<MDType>::CopyIndex(unsigned int index, MDType *item) {
   assert(allocation_state_ == ARRAY);
-#ifndef _WIN32
+
   return writer_->Copy(
       static_cast<MDRVA>(position_ + index * minidump_size<MDType>::size()), 
       item, minidump_size<MDType>::size());
-#else
-  return true; /* Implement Windows function */
-#endif
+
 }
 
 template<typename MDType>
 inline bool TypedMDRVA<MDType>::CopyIndexAfterObject(unsigned int index,
                                                      const void *src, 
                                                      size_t length) {
-#ifndef _WIN32
+
   assert(allocation_state_ == SINGLE_OBJECT_WITH_ARRAY);
 
   return writer_->Copy(
       static_cast<MDRVA>(position_ + minidump_size<MDType>::size() 
                          + index * length),
       src, length);
-#else
-  return true; /* Implement in Windows */
-#endif
 }
 
 template<typename MDType>
 inline bool TypedMDRVA<MDType>::Flush() {
-#ifndef _WIN32
   return writer_->Copy(position_, &data_, minidump_size<MDType>::size());
-#else
-  return true; /* Implement in Windows */
-#endif
 }
 
 }  // namespace google_breakpad

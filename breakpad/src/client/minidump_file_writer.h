@@ -77,8 +77,11 @@ public:
   // Open |path| as the destination of the minidump data.  Any existing file
   // will be overwritten.
   // Return true on success, or false on failure.
+#ifdef _WIN32
+  bool Open(LPCTSTR path);
+#else
   bool Open(const char *path);
-
+#endif
   // Sets the file descriptor |file| as the destination of the minidump data.
   // Can be used as an alternative to Open() when a file descriptor is
   // available.
@@ -114,7 +117,7 @@ public:
 #ifndef _WIN32
   bool Copy(MDRVA position, const void *src, ssize_t size);
 #else
-  bool Copy(MDRVA position, const void *src, SSIZE_T size);
+  bool Copy(MDRVA position, LPCVOID src, SSIZE_T size);
   __int64 myFileSeek(HANDLE hf, __int64 distance, DWORD MoveMethod);
 #endif
   // Return the current position for writing to the minidump

@@ -1,17 +1,17 @@
-﻿Build started 11/18/2013 11:32:28 PM.
+﻿Build started 11/19/2013 3:44:27 PM.
      1>Project "E:\Opensource\Mozilla\Bug\3\breakpad\src\client\minidump_file_writer_unittest.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Default\obj\minidump_file_writer_unittest\minidump_file_writer_unittest.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
-         E:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I.. /Zi /nologo /W1 /WX- /O2 /Oy- /Gm- /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Default\obj\minidump_file_writer_unittest\\" /Fd"Default\obj\minidump_file_writer_unittest\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt minidump_file_writer.cc
-         minidump_file_writer.cc
-     1>e:\opensource\mozilla\bug\3\breakpad\src\client\minidump_file_writer.cc(383): warning C4700: uninitialized local variable 'NumberOfBytesWritten' used
+         E:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I.. /Zi /nologo /W1 /WX- /O2 /Oy- /Gm- /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Default\obj\minidump_file_writer_unittest\\" /Fd"Default\obj\minidump_file_writer_unittest\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt minidump_file_writer_unittest.cc
+         minidump_file_writer_unittest.cc
          All outputs are up-to-date.
        Link:
-         E:\Program Files\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\Opensource\Mozilla\Bug\3\breakpad\src\client\Default\minidump_file_writer_unittest.exe" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Default\obj\minidump_file_writer_unittest\minidump_file_writer_unittest.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /PDB:"E:\Opensource\Mozilla\Bug\3\breakpad\src\client\Default\minidump_file_writer_unittest.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\Opensource\Mozilla\Bug\3\breakpad\src\client\Default\minidump_file_writer_unittest.lib" /MACHINE:X86 Default\obj\minidump_file_writer_unittest\string_conversion.obj
+         E:\Program Files\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\Opensource\Mozilla\Bug\3\breakpad\src\client\Default\minidump_file_writer_unittest.exe" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Default\obj\minidump_file_writer_unittest\minidump_file_writer_unittest.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"E:\Opensource\Mozilla\Bug\3\breakpad\src\client\Default\minidump_file_writer_unittest.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\Opensource\Mozilla\Bug\3\breakpad\src\client\Default\minidump_file_writer_unittest.lib" /MACHINE:X86 Default\obj\minidump_file_writer_unittest\string_conversion.obj
          Default\obj\minidump_file_writer_unittest\minidump_file_writer_unittest.obj
          Default\obj\minidump_file_writer_unittest\minidump_file_writer.obj
          Default\obj\minidump_file_writer_unittest\convert_UTF.obj
+         LINK : E:\Opensource\Mozilla\Bug\3\breakpad\src\client\Default\minidump_file_writer_unittest.exe not found or not built by the last incremental link; performing full link
          minidump_file_writer_unittest.vcxproj -> E:\Opensource\Mozilla\Bug\3\breakpad\src\client\Default\\minidump_file_writer_unittest.exe
        Manifest:
          C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"E:\Opensource\Mozilla\Bug\3\breakpad\src\client\Default\minidump_file_writer_unittest.exe;#1" /manifest Default\obj\minidump_file_writer_unittest\minidump_file_writer_unittest.exe.intermediate.manifest
@@ -22,4 +22,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.33
+Time Elapsed 00:00:09.09
