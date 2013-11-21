@@ -77,11 +77,9 @@ public:
   // Open |path| as the destination of the minidump data.  Any existing file
   // will be overwritten.
   // Return true on success, or false on failure.
-#ifdef _WIN32
-  bool Open(LPCTSTR path);
-#else
+
   bool Open(const char *path);
-#endif
+
   // Sets the file descriptor |file| as the destination of the minidump data.
   // Can be used as an alternative to Open() when a file descriptor is
   // available.

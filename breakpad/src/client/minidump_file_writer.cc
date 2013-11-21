@@ -67,11 +67,8 @@ MinidumpFileWriter::~MinidumpFileWriter() {
     Close();
 }
 
-#ifdef _WIN32
-bool MinidumpFileWriter::Open(LPCTSTR path) {
-#else
+
 bool MinidumpFileWriter::Open(const char *path) {
-#endif
 
 #if __linux__
   assert(file_ == -1);
@@ -127,6 +124,7 @@ bool MinidumpFileWriter::Close() {
   if (hFile_ != INVALID_HANDLE_VALUE) {
 		LARGE_INTEGER li; //LARGE_INETEGR to tell how many bytes
 		li.QuadPart = position_; // SetFilePointerEx expected a large integer
+		/* this function returns a bool if the operation has succedded */
 		bool flag_SetFilePointer =  SetFilePointerEx(
 		  hFile_, // handle to opened file
 		  li, // the number of bytes to move
@@ -155,6 +153,8 @@ bool MinidumpFileWriter::Close() {
 
 }
 
+
+/* clone of getpagesize() on Linux http://www.genesys-e.org/jwalter/mix4win.htm */
 #ifdef _WIN32
 long MinidumpFileWriter::getpagesize_WIN (void) {
     static long g_pagesize = 0;
@@ -376,23 +376,21 @@ bool MinidumpFileWriter::Copy(MDRVA position, const void *src, ssize_t size) {
   return false;
 }
 #else
-#ifdef WIN_32
 bool MinidumpFileWriter::Copy(MDRVA position, LPCVOID src, SSIZE_T size) {
-#else
-bool MinidumpFileWriter::Copy(MDRVA position, const void *src, SSIZE_T size) {
-#endif
+
   assert(src);
   assert(size);
-#ifndef _WIN32
-  assert(file_ != -1);
-#endif
+
   // Ensure that the data will fit in the allocated space
   if (static_cast<size_t>(size + position) > size_)
     return false;
 
   // Seek and write the data
   DWORD NumberOfBytesWritten = NULL; 
-  try{
+  try {
+	  /* This function myFileSeek used to know if file pointer has been moved 
+	     requisite positions */
+
 	  if (myFileSeek(hFile_, position, FILE_BEGIN) == static_cast<off_t>(position)) {
 		  if (WriteFile(hFile_, src, size, &NumberOfBytesWritten, NULL)) {
 				return true;
@@ -400,14 +398,13 @@ bool MinidumpFileWriter::Copy(MDRVA position, const void *src, SSIZE_T size) {
 	  }
 	  return false;
   }
-  catch(...){
+  catch(...) {
 	
   }
-
 }
 #endif
 
-
+/* myFileSeek is a wrapper for SetFilePointer http://msdn.microsoft.com/en-us/library/windows/desktop/aa365541%28v=vs.85%29.aspx */
 #ifdef _WIN32
 __int64 MinidumpFileWriter::myFileSeek(HANDLE hf, __int64 distance, DWORD MoveMethod)
 {
@@ -417,7 +414,7 @@ __int64 MinidumpFileWriter::myFileSeek(HANDLE hf, __int64 distance, DWORD MoveMe
 
    li.LowPart = SetFilePointer (hf, 
                                 li.LowPart, 
-                                &li.HighPart, 
+                                &li.HighPart,  
                                 MoveMethod);
 
    if (li.LowPart == INVALID_SET_FILE_POINTER && GetLastError() 

@@ -75,11 +75,9 @@ typedef struct {
   ArrayStructure array[1];
 } ObjectAndArrayStructure;
 
-#ifdef _WIN32
-static bool WriteFile(LPCTSTR path) {
-#else
+
 static bool WriteFile(const char *path) {
-#endif
+
   MinidumpFileWriter writer;
 
   if (writer.Open(path)) {
@@ -193,11 +191,18 @@ static bool CompareFile(const char *path) {
 
   if (_oFile != INVALID_HANDLE_VALUE) {
 	 if(FALSE != ReadFile(_oFile, ReadBuffer, expected_byte_count-1, &dwBytesRead, NULL)) {
-        std::cout<<ReadBuffer<<std::endl;
+		  char *b1, *b2;
+		  int count = 0;
+		  b1 = reinterpret_cast<char*>(ReadBuffer);
+		  b2 = reinterpret_cast<char*>(expected);
+		  while (count < expected_byte_count) {
+				std::cout<<*b1<<std::endl;		
+				b1++;
+				count++;
+		  }		  
      }
   }
-
-  return true;  /* Implement Windows function */
+  return true;  
 #endif
 }
 
