@@ -48,18 +48,33 @@ The usage details of each of these functions is explained in the code.
 
 References:
 [1]   https://code.google.com/p/google-breakpad/source/browse/trunk/src/client/?r=1018
+
 [2]   The original unittest doesn't run. You need to include stdlib and string headers.
+
 [3]   This will be located here.
+
 [4]   http://linux.die.net/man/2/open
+
 [5]   http://linux.die.net/man/2/read
+
 [6]   http://linux.die.net/man/2/write
+
 [7]   http://linux.die.net/man/2/close
+
 [8]   http://linux.die.net/man/2/ftruncate
+
 [9]   http://linux.die.net/man/2/lseek
+
 [10]  http://msdn.microsoft.com/en-us/library/windows/desktop/aa363858%28v=vs.85%29.aspx
+
 [11]  http://msdn.microsoft.com/en-us/library/windows/desktop/ms724211%28v=vs.85%29.aspx
+
 [12]  http://msdn.microsoft.com/en-us/library/windows/desktop/aa365747%28v=vs.85%29.aspx
+
 [13]  http://msdn.microsoft.com/en-us/library/windows/desktop/aa365467%28v=vs.85%29.aspx
+
 [14]  http://msdn.microsoft.com/en-us/library/windows/desktop/aa365541%28v=vs.85%29.aspx
+
 [15]  http://msdn.microsoft.com/en-us/library/windows/desktop/aa365542%28v=vs.85%29.aspx
+
 [17]  http://msdn.microsoft.com/en-us/library/windows/desktop/aa365531%28v=vs.85%29.aspx
